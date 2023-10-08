@@ -8,4 +8,7 @@ import org.springframework.stereotype.Repository;
 public interface TranslationRepository extends JpaRepository<Translation, Integer> {
 
 
+
+
+
 }

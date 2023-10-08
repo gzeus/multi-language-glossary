@@ -26,5 +26,11 @@ public class Word {
     )
     private List<Translation> translations;
 
-
+    @Override
+    public String toString() {
+        return "Word{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                '}';
+    }
 }

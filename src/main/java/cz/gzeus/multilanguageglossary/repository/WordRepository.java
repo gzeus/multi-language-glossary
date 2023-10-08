@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface WordRepository extends JpaRepository<Word, Integer> {
 
 
+
+
 }
