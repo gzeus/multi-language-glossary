@@ -8,68 +8,130 @@
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <body>
-<h1>Words list</h1>
+<h1 class="display-4 text-center">Glossary</h1>
+
+<!--Search bar-->
 
 
+<div class="container-sm w-50">
+
+    <div class="my-3 container d-flex justify-content-center">
+    <a  th:href="@{/words/list}" class="btn btn-outline-info mx-3">Display all words</a>
+    <a  th:href="@{/languages/manage}" class="btn btn-outline-info mx-3">Manage languages</a>
+    </div>
+    <form action="#" th:action="@{/words/search(searchTerm=${searchTerm})}" method="GET">
+        <div class="input-group mb-3">
+
+            <div class="input-group-prepend">
+                <span class="input-group-text bg-outline-secondary">🔎</span>
+            </div>
+
+
+            <input type="text" name="searchTerm" class="form-control" placeholder="search all words"
+                   aria-label="Search-words" aria-describedby="Search-words">
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-outline-secondary">Search</button>
+            </div>
+
+        </div>
+    </form>
+
+<!--    Form for saving a new word-->
+
+    <form action="#" th:object="${inputForm}" th:action="@{/words/save}" method="POST">
+        <div class="input-group mb-3">
+
+            <div class="input-group-prepend">
+                <span class="input-group-text bg-outline-info">+</span>
+            </div>
+
+            <input type="text" th:field="*{text}" class="form-control" placeholder="add a new word"
+                   aria-label="Add-word" aria-describedby="Add-word">
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-outline-info">Add</button>
+            </div>
+            <span class="text-danger" th:if="${#fields.hasErrors('text')}" th:errors="*{text}"></span>
+
+        </div>
+    </form>
+</div>
 
 <div class="mx-5">
     <table class="table table-striped table-bordered">
-        <thead >
+        <thead>
         <tr>
-            <th>WORD</th>
+            <th>Base word</th>
             <th:block th:each="language : ${languages}">
-            <th th:text="${language.name}"></th>
+                <th th:text="${language.name}"></th>
             </th:block>
 
         </tr>
 
 
         </thead>
-       <tbody class="">
+        <tbody class="">
+
+        <tr th:if="${words.isEmpty()}">
+            <td class="text-danger">
+
+                No results found!
+            </td>
+        </tr>
 
 
+<!--        Iterate through words, and display all their translations for all languages-->
 
-       <tr th:each="word : ${words}" >
-           <td th:text="${word.text}"></td>
-           <th:block  th:each="language : ${languages}">
-<!--               <th:block th:each="translation: ${word.translations.?[language.id == __${languageID}__]}">-->
-               <td>
-               <th:block th:each="transl: ${word.translations}">
+        <tr th:each="word : ${words}" >
+            <td th:id="'wordId'+${word.id}">
+                <div  >
+                    <span th:text="${word.text}"></span>
+                <span class="p-1">
+                  <a th:href="@{/words/delete(wordId=${word.id})}"
+                       onclick="if (!(confirm('Are you sure you want to delete this word? This will also delete all associated translations!'))) return false"
+                       class="btn btn mx-2 p-1 float-right"> ❌ </a>
+                </span>
+                </div>
 
+            </td>
 
-                        <div class="p-1 border border-primary rounded" th:if="${transl.language.id} == __${language.id}__">
-                        <span th:text="${transl.text}"></span>
-                            <a  th:href="@{/translations/delete(translationId=${transl.id})}"
-                                onclick="if (!(confirm('Are you sure you want to delete this translation?'))) return false"
-                                class="btn btn-outline-danger mx-2 p-1 float-right"> X </a>
+            <th:block th:each="language : ${languages}">
+                <td>
+                    <th:block th:each="transl: ${word.translations}">
+
+                         <div class="p-1"
+                             th:if="${transl.language.id} == __${language.id}__">
+                            <span th:text="${transl.text}"></span>
+                            <a th:href="@{/translations/delete(translationId=${transl.id})}"
+                               onclick="if (!(confirm('Are you sure you want to delete this translation?'))) return false"
+                               class="btn mx-2 p-1 float-right"> ❌ </a>
                         </div>
 
 
-               </th:block>
-                   <div class="input-group mb-3">
-                       <form action="#" th:action="@{/translations/save}" method="POST">
-                           <input type="hidden" name="wordId" th:value="${word.id}">
-                           <input type="hidden" name="languageId" th:value="${language.id}">
-<!--                           <input type="hidden" th:field="*{word}" th:value="${word}">-->
-<!--                           <input type="hidden" th:field="*{language}" th:value="${language}">-->
+                    </th:block>
+                    <form action="#" th:action="@{/translations/save}" method="POST">
+                        <div class="input-group mb-3">
 
-                       <input type="text" name="text" class="form-control" placeholder="..." aria-label="Add-translation" aria-describedby="Add-translation">
-                       <div class="input-group-append">
-                           <button type="submit" class="btn btn-outline-secondary">Add</button>
-                       </div>
-                       </form>
-                   </div>
-               </td>
+                            <input type="hidden" name="wordId" th:value="${word.id}">
+                            <input type="hidden" name="languageId" th:value="${language.id}">
 
-           </th:block>
+                            <input type="text" name="text" class="form-control" placeholder="..."
+                                   aria-label="Add-translation" aria-describedby="Add-translation">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-outline-secondary">Add</button>
+                            </div>
 
+                        </div>
+                    </form>
+
+
+                </td>
+
+            </th:block>
 
 
         </tr>
 
-       </tbody>
-
-
+        </tbody>
 
 
     </table>

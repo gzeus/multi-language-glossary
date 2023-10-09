@@ -1,6 +1,7 @@
 package cz.gzeus.multilanguageglossary.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Entity
@@ -13,6 +14,7 @@ public class Language {
     @Column(name = "id")
     private int id;
 
+    @NotBlank(message = "Name may not be blank")
     @Column(name = "name")
     private String name;
 

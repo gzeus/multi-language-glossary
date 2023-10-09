@@ -72,7 +72,7 @@ public class TranslationController {
         translationRepository.save(tempTranslation);
         System.out.println("saved!");
 
-        return "redirect:/words/list";
+        return "redirect:/words/list#wordId" + tempTranslation.getWordId();
 
 
     }
