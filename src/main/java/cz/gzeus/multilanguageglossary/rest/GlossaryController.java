@@ -12,8 +12,8 @@ public class GlossaryController {
     @GetMapping("/")
     public String helloWorld(Model model){
 
-        model.addAttribute("theDate", new java.util.Date());
-        return "helloworld";
+
+        return "redirect:/words/list";
     }
 
 
